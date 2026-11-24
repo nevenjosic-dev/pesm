@@ -5,7 +5,6 @@ edition = "2021"
 default-run = "pesm"
 
 [dependencies]
-# macroquad's own image crate, with its DDS reader (DXT1/3/5) switched on for player photos and crests
 image = { version = "0.24", default-features = false, features = ["png", "tga", "dds", "jpeg"] }
 macroquad = { version = "0.4", features = ["audio"] }
 serde = { version = "1", features = ["derive"] }
@@ -13,16 +12,23 @@ serde_json = "1"
 flate2 = "1"
 sha2 = "0.11"
 toml = "0.8"
-# the phone view (konzepte/mobile-ansicht.md): a small web server in its own thread, already in the tree via the Coaching Zone
+rand = "0.10"
+
+# PC-only dependencies (skipped on Android)
+[target.'cfg(not(target_os = "android"))'.dependencies]
 axum = { version = "0.8", features = ["ws"] }
 tokio = { version = "1", features = ["rt-multi-thread", "net", "sync", "time", "macros"] }
-rand = "0.10"
 qrcode = { version = "0.15", default-features = false }
 local-ip-address = "0.6"
-# background music: mpv ends with PES M (prctl), already in the tree
 libc = "0.2"
-# Punkt 4: the Coaching Zone as a library (memory reader, live tracker); read only, its folder is never changed
 pesm-coaching-zone = { git = "https://github.com/FabianZettl/pesm-coaching-zone", rev = "74c069f" }
+
+[package.metadata.android]
+assets = "assets/"
+build_targets = ["aarch64-linux-android"]
+
+[package.metadata.android.activity_attributes]
+"android:screenOrientation" = "userLandscape"
 
 [profile.dev]
 opt-level = 1
@@ -30,7 +36,6 @@ opt-level = 1
 [profile.dev.package."*"]
 opt-level = 3
 
-# small edits rebuild in seconds instead of a full crate rebuild (the game is not CPU-bound)
 [profile.release]
 incremental = true
 lto = "off"
