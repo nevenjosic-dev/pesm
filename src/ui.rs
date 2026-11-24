@@ -1004,3 +1004,18 @@ mod farb_tests {
         }
     }
 }
+let mut touch_wheel = 0.0f32;
+let mut next_y = None;
+for t in touches() {
+    if t.phase == TouchPhase::Moved || t.phase == TouchPhase::Stationary {
+        next_y = Some(t.position.y);
+        if let Some(prev_y) = self.last_touch_y {
+            if t.phase == TouchPhase::Moved {
+                touch_wheel += (t.position.y - prev_y) * 0.04;
+            }
+        }
+        break;
+    }
+}
+self.last_touch_y = next_y;
+self.wheel += touch_wheel;
