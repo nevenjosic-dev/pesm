@@ -13,12 +13,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Update Rust toolchain
+        run: |
+          rustup update stable
+          rustup default stable
+          rustup target add aarch64-linux-android
+
       - name: Build APK
-        run: cargo quad-apk build --release
+        run: |
+          rm -f Cargo.lock
+          cargo quad-apk build --release
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: pesm-android-apk
           path: target/android-artifacts/release/apk/*.apk
-          
