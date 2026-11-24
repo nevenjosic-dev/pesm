@@ -8,11 +8,23 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: notfl3/cargo-apk:latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Rust Android target
-        run: rustup target add aarch64-linux-android
+      - name: Update Rust and cargo-quad-apk
+        run: |
+          rustup update stable
+          rustup default stable
+          rustup target add aarch64-linux-android
+          cargo install --git https://github.com/not-fl3/cargo-quad-apk --force
 
-      - name: Check Android compilation
-        run: cargo check --target aarch64-linux-android
+      - name: Build APK
+        run: cargo quad-apk build --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: pesm-android-apk
+          path: target/android-artifacts/release/apk/*.apk
