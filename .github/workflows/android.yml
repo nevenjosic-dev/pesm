@@ -13,8 +13,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Update Rust and cargo-quad-apk
+      - name: Install zip and update Rust/cargo-quad-apk
         run: |
+          apt-get update && apt-get install -y zip
           rustup update stable
           rustup default stable
           rustup target add aarch64-linux-android
@@ -26,7 +27,7 @@ jobs:
             EXISTING=$(ls -d /opt/android-sdk-linux/platforms/android-* | sort -V | tail -n 1)
             ln -s "$EXISTING" /opt/android-sdk-linux/platforms/android-36
           fi
-          cargo quad-apk build --release
+          cargo quad-apk build --release --bin pesm
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
