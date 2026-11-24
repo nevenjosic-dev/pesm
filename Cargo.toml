@@ -38,3 +38,6 @@ incremental = true
 lto = "off"
 [package.metadata.android.application.activity]
 exported = true
+[package.metadata.android.activity_attributes]
+"android:exported" = "true"
+"android:screenOrientation" = "userLandscape"
