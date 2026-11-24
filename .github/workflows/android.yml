@@ -21,7 +21,12 @@ jobs:
           cargo install --git https://github.com/not-fl3/cargo-quad-apk --force
 
       - name: Build APK
-        run: cargo quad-apk build --release
+        run: |
+          if [ ! -d /opt/android-sdk-linux/platforms/android-36 ]; then
+            EXISTING=$(ls -d /opt/android-sdk-linux/platforms/android-* | sort -V | tail -n 1)
+            ln -s "$EXISTING" /opt/android-sdk-linux/platforms/android-36
+          fi
+          cargo quad-apk build --release
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
